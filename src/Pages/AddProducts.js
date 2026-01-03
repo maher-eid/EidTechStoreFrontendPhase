@@ -19,43 +19,46 @@ export default function AddProducts() {
   }
 
   const handleAddProduct = async () => {
-    setError("");
-    setSuccess("");
+  setError("");
+  setSuccess("");
 
-    if (!name || !price || !description || !image) {
-      setError("Please fill all fields");
+  if (!name || !price || !description || !image) {
+    setError("Please fill all fields");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("description", description);
+    formData.append("image", image);
+
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    const res = await fetch(`${API_URL}/products`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.message || "Failed to add product");
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("price", price);
-      formData.append("description", description); 
-      formData.append("image", image);              
+    setName("");
+    setPrice("");
+    setDescription("");
+    setImage(null);
+    setSuccess("Product added successfully");
+  } catch (err) {
+    console.error(err);
+    setError("Server error");
+  }
+};
 
-      const res = await fetch("http://localhost:5000/products", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Failed to add product");
-        return;
-      }
-
-      setName("");
-      setPrice("");
-      setDescription("");
-      setImage(null);
-      setSuccess("Product added successfully ");
-    } catch (err) {
-      console.error(err);
-      setError("Server error");
-    }
-  };
 
   return (
     <div style={{ maxWidth: 500, margin: "40px auto" }}>
