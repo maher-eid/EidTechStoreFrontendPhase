@@ -1,0 +1,8 @@
+.footer {
+  background: linear-gradient(180deg,#f8fafc,#eef2f7);
+  color: #334155;
+  padding: 16px 10px;
+  margin-top: 30px;
+  border-top: 1px solid #e6e9ef;
+}
+.footer p { margin: 0; }

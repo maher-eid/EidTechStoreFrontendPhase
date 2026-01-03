@@ -1,0 +1,48 @@
+.card {
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  background-color: #fff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f8f9fa;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.card.compact {
+  max-width: 240px;
+  padding: 10px;
+}
+
+.card.compact .card-img {
+  aspect-ratio: 3/2;
+  padding: 4px;
+}
+
+.buy-btn {
+  background-color: #0b5ed7;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-top: auto;
+  border-radius: 6px;
+}
+
+.buy-btn:hover {
+  background-color: #084298;
+}
