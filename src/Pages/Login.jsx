@@ -29,6 +29,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     setError("");
+    
 
     if (!email || !password) {
       setError("Please enter email and password");
