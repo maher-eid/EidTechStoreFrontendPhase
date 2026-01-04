@@ -3,8 +3,9 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
+import { productImages } from "../utils/imageImports";
 
-const ProductCard = ({ product, compact = false, onDelete }) => {
+const ProductCard = ({ product, compact = false, onDelete, onDetailsClick }) => {
   const navigate = useNavigate();
   const { addToCart, showNotification } = useContext(CartContext);
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
@@ -29,8 +30,7 @@ const ProductCard = ({ product, compact = false, onDelete }) => {
         alt={product.name}
         className="card-img"
         onError={(e) => {
-          e.currentTarget.src =
-            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=";
+          e.currentTarget.src = productImages.logo;
         }}
       />
 

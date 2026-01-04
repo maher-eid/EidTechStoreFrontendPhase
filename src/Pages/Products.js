@@ -4,6 +4,108 @@ import ProductCard from "../Components/ProductCard";
 import { AuthContext } from "../context/AuthContext";
 import { productImages } from "../utils/imageImports";
 
+// Modal component for product details
+const ProductDetailsModal = ({ product, onClose }) => {
+  if (!product) return null;
+
+  // Get specs from the iphoneSpecs object if available, otherwise use default
+  const specs = product.specs || {
+    Display: "N/A",
+    Camera: "N/A",
+    Chip: "N/A",
+    Battery: "N/A",
+    Storage: "N/A",
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          backgroundColor: "white",
+          borderRadius: 12,
+          padding: 20,
+          maxWidth: 850,
+          maxHeight: "90vh",
+          overflowY: "auto",
+          width: "90%",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            background: "none",
+            border: "none",
+            fontSize: 24,
+            cursor: "pointer",
+          }}
+        >
+          ×
+        </button>
+
+        <img
+          src={product.image}
+          alt={product.name}
+          style={{ width: "100%", borderRadius: 12, marginBottom: 20 }}
+        />
+
+        <h1 style={{ marginBottom: 5 }}>{product.name}</h1>
+        <h2 style={{ color: "#0b5ed7", marginTop: 0 }}>${product.price}</h2>
+
+        <p style={{ fontSize: 17, lineHeight: 1.6 }}>
+          {product.description || "No description available."}
+        </p>
+
+        <hr style={{ margin: "25px 0" }} />
+
+        <h3>Specifications</h3>
+        <ul style={{ fontSize: 16, lineHeight: "1.7" }}>
+          {Object.entries(specs).map(([key, value]) => (
+            <li key={key}>
+              <strong>{key}:</strong> {value}
+            </li>
+          ))}
+        </ul>
+
+        <br />
+
+        <button
+          onClick={onClose}
+          style={{
+            display: "inline-block",
+            marginTop: 20,
+            padding: "10px 16px",
+            borderRadius: 6,
+            background: "#222",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default function Products() {
   const navigate = useNavigate();
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
@@ -49,6 +151,16 @@ export default function Products() {
     } catch {
       alert("Server error");
     }
+  };
+
+  const handleDetailsClick = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
   };
 
   useEffect(() => {
@@ -101,6 +213,7 @@ export default function Products() {
             key={`${p.id}-${p.name}`}
             product={p}
             onDelete={isAdmin() ? handleDelete : null}
+            onDetailsClick={handleDetailsClick}
           />
         ))}
       </div>
