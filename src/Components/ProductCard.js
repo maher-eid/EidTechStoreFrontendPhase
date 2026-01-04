@@ -1,86 +1,117 @@
-import "../Assets/ProductCard.css";
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { CartContext } from "../context/CartContext";
+import React, { useState, useMemo, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import ProductCard from "../Components/ProductCard";
+import { productImages } from "../utils/imageImports";
 import { AuthContext } from "../context/AuthContext";
 
-const ProductCard = ({ product, compact = false, onDelete }) => {
+export default function Products() {
   const navigate = useNavigate();
-  const { addToCart, showNotification } = useContext(CartContext);
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
+  const API_URL = process.env.REACT_APP_API_URL;
 
-  if (!product) {
-    return <div className="product-card">No product data</div>;
-  }
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("none");
+  const [dbProducts, setDbProducts] = useState([]);
 
-  const handleAdd = () => {
-    if (!isAuthenticated()) {
-      showNotification?.("Please login to add items to cart");
-      navigate("/login");
-      return;
+  // 🔥 OLD CARDS — BACK
+  const baseProducts = [
+    {
+      id: 1,
+      name: "IPhone 13",
+      price: 499,
+      image: productImages.IPhone13,
+      model: "iphone13",
+    },
+    {
+      id: 2,
+      name: "IPhone 13 Pro",
+      price: 599,
+      image: productImages.IPhone13Pro,
+      model: "iphone13pro",
+    },
+    {
+      id: 3,
+      name: "IPhone 13 Pro Max",
+      price: 699,
+      image: productImages.IPhone13ProMax,
+      model: "iphone13promax",
+    },
+  ];
+
+  const handleDelete = async (id) => {
+    if (!isAdmin()) return;
+
+    if (!window.confirm("Delete this product?")) return;
+
+    try {
+      const res = await fetch(`${API_URL}/products/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        alert("Delete failed");
+        return;
+      }
+
+      setDbProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch {
+      alert("Server error");
     }
-
-    addToCart(product, 1);
-    showNotification?.(`${product.name} added to cart!`);
   };
 
+  useEffect(() => {
+    const fetchDbProducts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/products`);
+        const data = await res.json();
+        setDbProducts(data);
+      } catch {
+        console.error("Failed to load DB products");
+      }
+    };
+
+    fetchDbProducts();
+  }, [API_URL]);
+
+  const allProducts = useMemo(
+    () => [...baseProducts, ...dbProducts],
+    [dbProducts]
+  );
+
+  const filtered = useMemo(() => {
+    let list = allProducts.filter((p) =>
+      p.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (sort === "asc") list.sort((a, b) => a.price - b.price);
+    if (sort === "desc") list.sort((a, b) => b.price - a.price);
+
+    return list;
+  }, [query, sort, allProducts]);
+
   return (
-    <div className={"card" + (compact ? " compact" : "")}>
-      <img
-        src={product.image}
-        alt={product.name}
-        className="card-img"
-        onError={(e) => {
-          e.currentTarget.src =
-            "https://via.placeholder.com/400x300?text=No+Image";
+    <div style={{ padding: 28 }}>
+      <h2>Our Products</h2>
+
+      {!isAuthenticated() && (
+        <button onClick={() => navigate("/login")}>Login</button>
+      )}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 20,
         }}
-      />
-
-      <h3>{product.name}</h3>
-      <p>${product.price}</p>
-
-      <button onClick={handleAdd} className="buy-btn">
-        Add to Cart
-      </button>
-
-      {product.model && (
-        <Link
-          to={`/iphonedetails/${product.model}`}
-          style={{
-            display: "inline-block",
-            marginTop: 8,
-            padding: "8px 12px",
-            borderRadius: 6,
-            background: "#444",
-            color: "white",
-            textDecoration: "none",
-            fontSize: 14,
-          }}
-        >
-          Details
-        </Link>
-      )}
-
-      {/* ADMIN DELETE */}
-      {isAdmin() && onDelete && (
-        <button
-          onClick={() => onDelete(product.id)}
-          style={{
-            marginTop: 10,
-            background: "red",
-            color: "white",
-            border: "none",
-            padding: "8px 12px",
-            borderRadius: 6,
-            cursor: "pointer",
-            width: "100%",
-          }}
-        >
-          Delete
-        </button>
-      )}
+      >
+        {filtered.map((p) => (
+          <ProductCard
+            key={`${p.id}-${p.name}`}
+            product={p}
+            onDelete={isAdmin() ? handleDelete : null}
+          />
+        ))}
+      </div>
     </div>
   );
-};
-
-export default ProductCard;
+}
