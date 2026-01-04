@@ -13,27 +13,43 @@ export default function Products() {
   const [sort, setSort] = useState("none");
   const [dbProducts, setDbProducts] = useState([]);
 
-  // ❌ THESE SHOULD NEVER BE DELETED
+  // 🔥 OLD CARDS — BACK
   const baseProducts = [
-    { id: "b1", name: "IPhone 13", price: 499, image: productImages.IPhone13 },
-    { id: "b2", name: "IPhone 13 Pro", price: 599, image: productImages.IPhone13Pro },
-    { id: "b3", name: "IPhone 13 Pro Max", price: 699, image: productImages.IPhone13ProMax },
+    {
+      id: 1,
+      name: "IPhone 13",
+      price: 499,
+      image: productImages.IPhone13,
+      model: "iphone13",
+    },
+    {
+      id: 2,
+      name: "IPhone 13 Pro",
+      price: 599,
+      image: productImages.IPhone13Pro,
+      model: "iphone13pro",
+    },
+    {
+      id: 3,
+      name: "IPhone 13 Pro Max",
+      price: 699,
+      image: productImages.IPhone13ProMax,
+      model: "iphone13promax",
+    },
   ];
 
   const handleDelete = async (id) => {
     if (!isAdmin()) return;
 
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm("Delete this product?")) return;
 
     try {
       const res = await fetch(`${API_URL}/products/${id}`, {
         method: "DELETE",
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        alert(data.message || "Delete failed");
+        alert("Delete failed");
         return;
       }
 
@@ -90,9 +106,9 @@ export default function Products() {
       >
         {filtered.map((p) => (
           <ProductCard
-            key={p.id}
+            key={`${p.id}-${p.name}`}
             product={p}
-            onDelete={dbProducts.some((dp) => dp.id === p.id) ? handleDelete : null}
+            onDelete={isAdmin() ? handleDelete : null}
           />
         ))}
       </div>
