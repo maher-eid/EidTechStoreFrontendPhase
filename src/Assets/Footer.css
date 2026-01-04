@@ -1,13 +1,7 @@
 .footer {
-  background: linear-gradient(180deg,#f8fafc,#eef2f7);
-  color: #334155;
+  background: linear-gradient(90deg,#0f1724,#0b3a55);
+  color: #fff;
   padding: 16px 10px;
   border-top: 1px solid #e6e9ef;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1000;
 }
 .footer p { margin: 0; }
