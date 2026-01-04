@@ -109,7 +109,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Offers Content */}
+          
           <div
             style={{
               background: "#fff3f3",
