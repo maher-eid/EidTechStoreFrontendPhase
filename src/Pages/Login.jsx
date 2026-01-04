@@ -95,10 +95,9 @@ const res = await fetch(`${API_URL}/user/register`, {
     }
   };
   return (
-    <div style={{ minHeight: "80vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <div style={{ minHeight: "80vh", display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
       <div style={{ width: 420, padding: 30, border: "1px solid #ddd" }}>
         <h2>{currentUser ? "Account" : isRegistering ? "Register" : "Login"}</h2>
-        <h4> use AdminAccount email : admin@eidtech.com password admin123</h4>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -212,6 +211,28 @@ const res = await fetch(`${API_URL}/user/register`, {
             </p>
           </>
         )}
+      </div>
+
+     
+      <div style={{
+        position: "absolute",
+        right: 20,
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: 250,
+        padding: 20,
+        background: "#f8f9fa",
+        border: "1px solid #ddd",
+        borderRadius: 8,
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
+      }}>
+        <h4 style={{ margin: "0 0 10px 0", color: "#333" }}>Admin Account</h4>
+        <p style={{ margin: "5px 0", fontSize: 14 }}>
+          <strong>Email:</strong> admin@eidtech.com
+        </p>
+        <p style={{ margin: "5px 0", fontSize: 14 }}>
+          <strong>Password:</strong> admin123
+        </p>
       </div>
     </div>
   );
